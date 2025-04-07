@@ -1,69 +1,60 @@
+import {useState} from 'react';
 import './App.css';
-import {SuperButton} from "./components/SuperButton.tsx";
-import {SuperCrosses} from "./components/SuperCrosses.tsx";
-import styles from './components/Superbutton.module.css'
+import {Country} from "./Country";
+import {v1} from "uuid";
+
+export type BanknotsType = '' // создадим типы для banknotes -он может быть 'DOLLARS', 'RUBLS' или 'All'
+export type MoneyType = {
+    banknote: BanknotsType
+    nominal: any// не ленимся, убираем заглушку, и пишем правильный тип)
+    id: any// ложку за Димыча, за...
+}
+
+let defaultMoney: any = [  // типизируем
+    {banknote: 'USD', nominal: 100, id: v1()},
+    {banknote: 'USD', nominal: 100, id: v1()},
+    {banknote: 'RUB', nominal: 100, id: v1()},
+    {banknote: 'USD', nominal: 100, id: v1()},
+    {banknote: 'USD', nominal: 100, id: v1()},
+    {banknote: 'RUB', nominal: 100, id: v1()},
+    {banknote: 'USD', nominal: 100, id: v1()},
+    {banknote: 'RUB', nominal: 100, id: v1()},
+]
+
+
+export const moneyFilter = (money: any, filter: any): any => {
+    //если пришел filter со значением 'All', то возвращаем все банкноты
+    //return money.filter... ну да, придется фильтровать
+}
+
 
 export const App = () => {
+    // убираем заглушки в типизации и вставляем в качестве инициализационного значения defaultMoney
+    const [money, setMoney] = useState<any>([])
+    const [filterValue, setFilterValue] = useState<any>('')   // по умолчанию указываем все банкноты
 
-    const cross = [
-        { id: 1, model: "ADIDAS", size: "XXX" },
-        { id: 2, model: "ABIBAS", size: "YYY" },
-        { id: 3, model: "PUMA", size: "ZZZ" },
-    ];
+    // а вот сейчас притормаживаем. И вдумчиво: константа filteredMoney получает результат функции moneyFilter
+    // в функцию передаем деньги и фильтр, по которому ихбудем выдавать(ретёрнуть)
+    // const filteredMoney = moneyFilter(грошы, фильтр)
+
+    const addMoney = (banknote: BanknotsType) => {
+        // Добавление денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
+    }
+
+    const removeMoney = (banknote: BanknotsType) => {
+        // Снятие денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
+        // const index = money.findIndex
+        //  if (index !== -1) {
+        //      setMoney(money.filter((el, i) => ...));
+        //  }
+    }
 
     return (
-        <div>
-            <SuperButton onClick={()=>{}} className={styles.redForSuperButton}>
-                Red super Button
-            </SuperButton>
-
-            <SuperButton onClick={()=>{}} className={styles.blueForSuperButton}>
-            Blue super Button
-            </SuperButton>
-
-            <SuperCrosses crosses={cross}>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <SuperButton color={"red"}>Red superbutton</SuperButton>
-                <SuperButton color={"secondary"}>Secondary superbutton</SuperButton>
-                <SuperButton>Default superbutton</SuperButton>
-                <SuperButton disabled>Disabled superbutton</SuperButton>
-            </SuperCrosses>
-
-            <SuperCrosses crosses={cross}>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <SuperButton color={"red"}>Red superbutton</SuperButton>
-                <SuperButton color={"secondary"}>Secondary superbutton</SuperButton>
-            </SuperCrosses>
-
-            <SuperCrosses crosses={cross}>
-                <input type={"text"}/>
-                <input type={"text"}/>
-                <input type={"text"}/>
-                <input type={"text"}/>
-                <div>Ky4a info</div>
-                <div>Ky4a info</div>
-                <SuperButton color={"red"}>Red superbutton</SuperButton>
-                <SuperButton color={"secondary"}>Secondary superbutton</SuperButton>
-            </SuperCrosses>
-
-         {/*   <Modal>
-                <h2>lorem lorem lorem</h2>
-                <input type={'email'} placeholder={'email'}/>
-                <input type={'password'} placeholder={'pass'}/>
-                <input type={'password'} placeholder={'pass'}/>
-                <label>
-                    <input type={'checkbox'}/>
-                    i agree
-                </label>
-                <SuperButton type={"submit"}>send</SuperButton>
-            </Modal>*/}
-
-
+        <div className="App">
+            <Country
+                data={filteredMoney}   //отрисовать будем деньги после фильтрации
+                setFilterValue={setFilterValue}  //useState передаем? Так можно было?!
+            />
         </div>
     );
 }
