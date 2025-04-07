@@ -3,14 +3,14 @@ import './App.css';
 import {Country} from "./Country";
 import {v1} from "uuid";
 
-export type BanknotsType = '' // создадим типы для banknotes -он может быть 'DOLLARS', 'RUBLS' или 'All'
+export type BanknotsType = 'USD' | 'RUB' | 'All'
 export type MoneyType = {
     banknote: BanknotsType
-    nominal: any// не ленимся, убираем заглушку, и пишем правильный тип)
-    id: any// ложку за Димыча, за...
+    nominal: number
+    id: string
 }
 
-let defaultMoney: any = [  // типизируем
+const defaultMoney: MoneyType[] = [
     {banknote: 'USD', nominal: 100, id: v1()},
     {banknote: 'USD', nominal: 100, id: v1()},
     {banknote: 'RUB', nominal: 100, id: v1()},
@@ -21,39 +21,35 @@ let defaultMoney: any = [  // типизируем
     {banknote: 'RUB', nominal: 100, id: v1()},
 ]
 
-
-export const moneyFilter = (money: any, filter: any): any => {
-    //если пришел filter со значением 'All', то возвращаем все банкноты
-    //return money.filter... ну да, придется фильтровать
+export const moneyFilter = (money: MoneyType[], filter: BanknotsType): MoneyType[]  => {
+    return (filter === "All") ? money : money.filter(el => el.banknote === filter)
 }
 
 
 export const App = () => {
-    // убираем заглушки в типизации и вставляем в качестве инициализационного значения defaultMoney
-    const [money, setMoney] = useState<any>([])
-    const [filterValue, setFilterValue] = useState<any>('')   // по умолчанию указываем все банкноты
+    const [money, setMoney] = useState<MoneyType[]>(defaultMoney)
+    const [filterValue, setFilterValue] = useState<BanknotsType>('All')
 
-    // а вот сейчас притормаживаем. И вдумчиво: константа filteredMoney получает результат функции moneyFilter
-    // в функцию передаем деньги и фильтр, по которому ихбудем выдавать(ретёрнуть)
-    // const filteredMoney = moneyFilter(грошы, фильтр)
+    const filteredMoney = moneyFilter(money, filterValue)
 
-    const addMoney = (banknote: BanknotsType) => {
-        // Добавление денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
+    const addMoney  = (banknote: BanknotsType) => {
+        setMoney([...money, {banknote, nominal: 100,  id: v1()}])
     }
 
-    const removeMoney = (banknote: BanknotsType) => {
-        // Снятие денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
-        // const index = money.findIndex
-        //  if (index !== -1) {
-        //      setMoney(money.filter((el, i) => ...));
-        //  }
+   const removeMoney = (key: BanknotsType) => {
+         const index = money.findIndex(el => el.banknote === key)
+          if (index !== -1) {
+              setMoney(money.filter((el, i) => i !== index))
+         }
     }
 
     return (
         <div className="App">
             <Country
-                data={filteredMoney}   //отрисовать будем деньги после фильтрации
-                setFilterValue={setFilterValue}  //useState передаем? Так можно было?!
+                data={filteredMoney}
+                setFilterValue={setFilterValue}
+                addMoney={addMoney}
+                removeMoney={removeMoney}
             />
         </div>
     );
